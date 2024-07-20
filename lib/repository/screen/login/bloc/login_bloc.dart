@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:salesindia/domain/constents/app_prefs.dart';
+import 'package:salesindia/domain/model/login_model.dart';
 import '../../../../data/remote/api_helper.dart';
 import '../../../../data/remote/url_helper.dart';
 import '../../../../domain/constents/exception.dart';
@@ -16,14 +17,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       emit(LoginLodingState());
       try {
         var resData =
-            await apiHelper.postApi(url: UrlHelper.Login_User_URL, mData: {
+            await apiHelper.postApi(url: UrlHelper.Login_User_URL, bodyParams: {
           "email": event.email,
           "password": event.pass,
-        }) as JsonResponse;
-        if (resData.status!) {
+        });
+        var rawData = LoginSignupModel.fromJson(resData);
+        if (rawData.status!) {
           ///shared Preferences
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          prefs.setString('token', resData.token!);
+          AppPrefs().setPrefs(rawData.token!);
           emit(LoginLodedState());
         }
       } catch (e) {

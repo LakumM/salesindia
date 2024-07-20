@@ -1,21 +1,41 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:http/http.dart' as http_clint;
-
+import 'package:salesindia/domain/constents/app_prefs.dart';
 import '../../domain/constents/exception.dart';
 
 class ApiHelper {
-  Future<dynamic> postApi({
+  /// Get Method
+  Future<dynamic> getApi({
     required String url,
-    Map<String, dynamic>? mData,
   }) async {
     var uri = Uri.parse(url);
+    String? tokan = await AppPrefs().getPrefs();
+    print("token get $tokan");
     try {
-      var res = await http_clint.post(uri, body: mData, headers: {
-        'Authorization':
-            'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjA0NDIzNjYsIm5iZiI6MTcyMDQ0MjM2NiwiZXhwIjoxNzIwNDg1NTY2LCJkYXRhIjp7InVzZXJfaWQiOiI3IiwidXNlcl9lbWFpbCI6Im11a2VzaDFAZ21haWwuY29tIn19.8qw5ox4kgU70oIKqTEeYMgco4A-6OsIPPNNsSasITL0'
-      });
+      var res = await http_clint
+          .get(uri, headers: {'Authorization': 'Bearer $tokan'});
+      return returnJsonResponse(res);
+    } on SocketException catch (e) {
+      FetchDataException(errorMsg: "Internet Not Found $e");
+    }
+  }
+
+  /// Post Method
+  Future<dynamic> postApi({
+    required String url,
+    Map<String, dynamic>? bodyParams,
+    bool isHeadersRequired = false,
+  }) async {
+    var uri = Uri.parse(url);
+    String? token;
+    if (isHeadersRequired) {
+      token = await AppPrefs().getPrefs();
+    }
+    try {
+      var res = await http_clint.post(uri,
+          body: jsonEncode(bodyParams),
+          headers: isHeadersRequired ? {'Authorization': 'Bearer $token'} : {});
       return returnJsonResponse(res);
     } on SocketException catch (e) {
       FetchDataException(errorMsg: "Internet Not Found $e");
@@ -24,18 +44,14 @@ class ApiHelper {
 }
 
 dynamic returnJsonResponse(http_clint.Response res) {
-  print(res.statusCode);
-  print(res.body);
+//  print(res.statusCode);
+  //print(res.body);
   switch (res.statusCode) {
     case 200:
       {
-        var mData = jsonDecode(res.body);
-
-        print("$mData");
-        return JsonResponse(
-            status: mData['status'],
-            message: mData['message'],
-            token: mData['token']);
+        var dResp = jsonDecode(res.body);
+        print("$dResp");
+        return dResp;
       }
     case 400:
       throw BadRequestException(errorMsg: res.body.toString());
@@ -47,12 +63,4 @@ dynamic returnJsonResponse(http_clint.Response res) {
       throw FetchDataException(
           errorMsg: "error occurred while Communication  with server");
   }
-}
-
-class JsonResponse {
-  bool? status;
-  String? message;
-  String? token;
-  JsonResponse(
-      {required this.status, required this.message, required this.token});
 }

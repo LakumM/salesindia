@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:lottie/lottie.dart';
 import '../widgets/cust_buttons.dart';
 import 'login/signin_screen.dart';
 
@@ -9,20 +9,23 @@ class OnboardingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Stack(
-          children: [
-            Container(
-              height: MediaQuery.sizeOf(context).height * 0.8,
-              width: MediaQuery.sizeOf(context).width * 0.9,
-              decoration: const BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage('assets/images/banner/onboard.jpg'),
-                      fit: BoxFit.fitWidth)),
-            ),
-            Positioned(
-              bottom: 40,
-              right: 60,
+      backgroundColor: Colors.white,
+      body: Stack(
+        children: [
+          Container(
+            alignment: Alignment.center,
+            height: MediaQuery.sizeOf(context).height * 0.8,
+            /* decoration: const BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage('assets/images/banner/onboard.jpg'),
+                    fit: BoxFit.fitWidth)),*/
+            child: Lottie.asset('assets/lottie/lot_Woman_thinking.json',
+                fit: BoxFit.contain),
+          ),
+          Padding(
+            padding: EdgeInsets.only(bottom: 100),
+            child: Align(
+              alignment: Alignment.bottomCenter,
               child: SizedBox(
                 width: 280,
                 height: 55,
@@ -36,9 +39,9 @@ class OnboardingScreen extends StatelessWidget {
                               builder: (context) => SigninScreen()));
                     }),
               ),
-            )
-          ],
-        ),
+            ),
+          )
+        ],
       ),
     );
   }

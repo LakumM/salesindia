@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:salesindia/data/remote/api_helper.dart';
-
 import '../../utils/font_style.dart';
 import '../../widgets/cust_buttons.dart';
 import '../../widgets/cust_tf_inputdecoration.dart';
-import '../homescreen.dart';
-import '../signup_screen.dart';
+import '../home/homescreen.dart';
+import '../signup/signup_screen.dart';
 import 'bloc/login_bloc.dart';
 
 class SigninScreen extends StatefulWidget {
@@ -48,7 +46,6 @@ class SigninScreenState extends State<SigninScreen> {
                 width: MediaQuery.sizeOf(context).width * 0.9,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
-                    color: Colors.white,
                     boxShadow: const [
                       BoxShadow(
                         blurRadius: 3,
@@ -94,19 +91,22 @@ class SigninScreenState extends State<SigninScreen> {
                               ///show snack bar
                               ScaffoldMessenger.of(context)
                                   .showSnackBar(SnackBar(
+                                      duration: Duration(milliseconds: 200),
                                       content: Row(
-                                children: [
-                                  CircularProgressIndicator(),
-                                  mSpacer(),
-                                  Text('Logging - in...')
-                                ],
-                              )));
+                                        children: [
+                                          CircularProgressIndicator(),
+                                          mSpacer(),
+                                          Text('Logging - in...')
+                                        ],
+                                      )));
                             } else if (state is LoginLodedState) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
+                                      duration: Duration(milliseconds: 200),
                                       content:
                                           Text('Logged in Successfully!!')));
-                              Navigator.push(context, MaterialPageRoute(
+                              Navigator.pushReplacement(context,
+                                  MaterialPageRoute(
                                 builder: (context) {
                                   return const HomeScreen();
                                 },
@@ -130,16 +130,14 @@ class SigninScreenState extends State<SigninScreen> {
                               })),
                     ),
                     mSpacer(),
-                    Text(
-                      'or',
-                      style: mFontStyle(fontSize: 20),
-                    ),
+
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         TextButton(
                             onPressed: () {
-                              Navigator.push(context, MaterialPageRoute(
+                              Navigator.pushReplacement(context,
+                                  MaterialPageRoute(
                                 builder: (context) {
                                   return const SignupScreen();
                                 },
