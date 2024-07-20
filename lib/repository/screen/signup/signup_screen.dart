@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:salesindia/repository/screen/login/bloc/login_bloc.dart';
 import 'package:salesindia/repository/screen/login/signin_screen.dart';
 import 'package:salesindia/repository/screen/signup/bloc/signup_bloc.dart';
 import 'package:salesindia/repository/screen/signup/bloc/signup_event.dart';
 import 'package:salesindia/repository/screen/signup/bloc/signup_state.dart';
 import '../../../data/remote/api_helper.dart';
-import '../../../data/remote/url_helper.dart';
 import '../../utils/font_style.dart';
 import '../../widgets/cust_buttons.dart';
 import '../../widgets/cust_tf_inputdecoration.dart';

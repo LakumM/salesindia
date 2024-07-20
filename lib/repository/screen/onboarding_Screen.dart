@@ -15,15 +15,11 @@ class OnboardingScreen extends StatelessWidget {
           Container(
             alignment: Alignment.center,
             height: MediaQuery.sizeOf(context).height * 0.8,
-            /* decoration: const BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage('assets/images/banner/onboard.jpg'),
-                    fit: BoxFit.fitWidth)),*/
             child: Lottie.asset('assets/lottie/lot_Woman_thinking.json',
                 fit: BoxFit.contain),
           ),
           Padding(
-            padding: EdgeInsets.only(bottom: 100),
+            padding: const EdgeInsets.only(bottom: 100),
             child: Align(
               alignment: Alignment.bottomCenter,
               child: SizedBox(
@@ -33,6 +29,8 @@ class OnboardingScreen extends StatelessWidget {
                     bgColor: const Color(0xFF2C2C2C),
                     text: "Get Started...!",
                     onPress: () {
+                      /*  var token = AppPrefs().getPrefs;
+                      if (token == null) */
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(

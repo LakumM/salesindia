@@ -1,9 +1,13 @@
+import 'dart:developer';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:salesindia/repository/screen/home/home_bloc/home_bloc.dart';
 import 'package:salesindia/repository/screen/home/home_bloc/home_event.dart';
 import 'package:salesindia/repository/screen/home/home_bloc/home_state.dart';
+import 'package:salesindia/repository/screen/home/product_bloc/product_bloc.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../../utils/font_style.dart';
 import '../../widgets/cate_container.dart';
@@ -98,23 +102,37 @@ class HomeScreenState extends State<HomeScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: SizedBox(
-                height: mediaQueryHeight,
-                child: GridView.builder(
-                  physics: NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: 40,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 7 / 9,
-                    crossAxisSpacing: 8,
-                    mainAxisSpacing: 8,
-                    mainAxisExtent: 230,
-                  ),
-                  itemBuilder: (context, index) {
-                    return CateContainer();
-                  },
-                ),
-              ),
+                  height: mediaQueryHeight,
+                  child: BlocBuilder<ProductBloc, ProductState>(
+                      builder: (context, state) {
+                    if (state is ProductLoadingState) {
+                      return CircularProgressIndicator();
+                    } else if (state is ProductLoadedState) {
+                      return GridView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: 40,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 7 / 9,
+                          crossAxisSpacing: 8,
+                          mainAxisSpacing: 8,
+                          mainAxisExtent: 230,
+                        ),
+                        itemBuilder: (context, index) {
+                          return CateContainer(
+                            imageAssets: Image.asset(
+                              'assets/images/subcatlog/Img_hphone.jpg',
+                              height: MediaQuery.sizeOf(context).height * 0.15,
+                            ),
+                          );
+                        },
+                      );
+                    } else if (state is ProductErrorState) {
+                      print('error $state');
+                    }
+                    return Container();
+                  })),
             )
           ],
         ),
@@ -285,42 +303,45 @@ class HomeScreenState extends State<HomeScreen> {
   Widget category() {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
+        log('this is state $state');
         if (state is HomeLoadingState) {
           return const CircularProgressIndicator();
         } else if (state is HomeLoadedState) {
-          return ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: state.catModel.length,
-            itemBuilder: (context, index) {
-              var item = state.catModel[index];
-              return Padding(
-                padding: EdgeInsets.only(
-                  left: 20,
-                  top: 10,
-                  right: index == imgList.length - 1 ? 20 : 0,
-                ),
-                child: Column(
-                  children: [
-                    ClipOval(
-                      child: Image.asset(
-                        "assets/images/category/mobile.jpg",
-                        fit: BoxFit.fill,
-                        width: 80,
-                        height: 80,
+          return Expanded(
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: state.catModel.data!.length,
+              itemBuilder: (context, index) {
+                var item = state.catModel.data![index];
+                return Padding(
+                  padding: EdgeInsets.only(
+                    left: 20,
+                    top: 10,
+                    right: index == imgList.length - 1 ? 20 : 0,
+                  ),
+                  child: Column(
+                    children: [
+                      ClipOval(
+                        child: Image.asset(
+                          "assets/images/category/mobile.jpg",
+                          fit: BoxFit.fill,
+                          width: 80,
+                          height: 80,
+                        ),
                       ),
-                    ),
-                    Center(
-                        child: Text(
-                      "${item.name}",
-                      style:
-                          mFontStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                      maxLines: 2,
-                      textAlign: TextAlign.center,
-                    ))
-                  ],
-                ),
-              );
-            },
+                      Center(
+                          child: Text(
+                        "${item.name}",
+                        style: mFontStyle(
+                            fontSize: 16, fontWeight: FontWeight.w600),
+                        maxLines: 2,
+                        textAlign: TextAlign.center,
+                      ))
+                    ],
+                  ),
+                );
+              },
+            ),
           );
         } else if (state is HomeErrorState) {
           print('${state.errorMsg}');

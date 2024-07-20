@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import '../utils/font_style.dart';
 
 class CateContainer extends StatelessWidget {
-  const CateContainer({super.key});
+  Widget? imageAssets;
+  CateContainer({super.key, required this.imageAssets});
 
   @override
   Widget build(BuildContext context) {
@@ -31,12 +32,7 @@ class CateContainer extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Center(
-                child: Image.asset(
-                  'assets/images/subcatlog/Img_hphone.jpg',
-                  height: MediaQuery.sizeOf(context).height * 0.15,
-                ),
-              ),
+              Center(child: imageAssets),
               SizedBox(height: 10),
               Text(
                 'HeadPhone',

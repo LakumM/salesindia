@@ -1,12 +1,13 @@
-import 'package:flutter/material.dart';
+@override
+abstract class SignupState {}
 
-@immutable
-sealed class SignupState {}
+class SignupInitialState extends SignupState {}
 
-final class SignupInitialState extends SignupState {}
-final class SignupLoadingState extends SignupState {}
-final class SignupLoadedState extends SignupState {}
-final class SignupErrorState extends SignupState {
+class SignupLoadingState extends SignupState {}
+
+class SignupLoadedState extends SignupState {}
+
+class SignupErrorState extends SignupState {
   String? ErrorMsg;
   SignupErrorState({required this.ErrorMsg});
 }
