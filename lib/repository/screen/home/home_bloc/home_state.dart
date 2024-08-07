@@ -7,8 +7,8 @@ class HomeInitialState extends HomeState {}
 class HomeLoadingState extends HomeState {}
 
 class HomeLoadedState extends HomeState {
-  Categories catModel;
-  HomeLoadedState({required this.catModel});
+  CategoriesModel categoriesModel;
+  HomeLoadedState({required this.categoriesModel});
 }
 
 class HomeErrorState extends HomeState {

@@ -1,8 +1,6 @@
 import 'dart:developer';
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:salesindia/repository/screen/home/home_bloc/home_bloc.dart';
 import 'package:salesindia/repository/screen/home/home_bloc/home_event.dart';
@@ -11,6 +9,7 @@ import 'package:salesindia/repository/screen/home/product_bloc/product_bloc.dart
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../../utils/font_style.dart';
 import '../../widgets/cate_container.dart';
+import '../product_details/pro_details_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -21,13 +20,24 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   List<String> imgList = [
-    "assets/images/banner/img_banner.jpg",
-    "assets/images/banner/img_banner.png",
-    "assets/images/banner/imagesPINK.jpg",
-    "assets/images/banner/images.jpg",
-    "assets/images/banner/img_banner.jpg",
-    "assets/images/banner/img_banner.png",
+    "assets/images/banner/banner.jpg",
+    "assets/images/banner/D126762128_1400x800._CB569294520_.jpg",
+    "assets/images/banner/D141165058_SIM_1400x800._CB569331184_.jpg",
+    "assets/images/banner/D142117137_1400x800._CB569287803_.jpg",
+    "assets/images/banner/D143403581_2024__1400x800._CB569229867_.jpg",
+    "assets/images/banner/D143403581_2024__1400x800._CB569229867_ (1).jpg",
+    "assets/images/banner/D147662287_WLD_NARZO_N61_NEWLAUNCH_catpage_1400x800._CB567467414_.jpg",
+    "assets/images/banner/D147671870_IN_WLD_BAU_Redmi13_5G_1400x800._CB569294520_.jpg",
   ];
+  List<String> categories = [
+    "assets/images/category/appo.jpg",
+    "assets/images/category/lenovo.jpg",
+    "assets/images/category/iphone.jpg",
+    "assets/images/category/samsung.jpg",
+    "assets/images/category/mi.jpg",
+    "assets/images/category/vivo.jpg"
+  ];
+
   var activeIndex = 0;
   var controller = PageController(viewportFraction: 0.8, keepPage: true);
 
@@ -36,6 +46,7 @@ class HomeScreenState extends State<HomeScreen> {
     // TODO: implement initState
     super.initState();
     BlocProvider.of<HomeBloc>(context).add(GetCategoryEvent());
+    BlocProvider.of<ProductBloc>(context).add(GetProduct());
   }
 
   @override
@@ -43,8 +54,9 @@ class HomeScreenState extends State<HomeScreen> {
     double mediaQueryWidth = MediaQuery.sizeOf(context).width;
     double mediaQueryHeight = MediaQuery.sizeOf(context).height;
     return Scaffold(
+      extendBody: true,
       appBar: AppBar(
-        title: ImageIcon(
+        title: const ImageIcon(
           AssetImage("assets/icon/ic_more.png"),
           size: 26,
         ),
@@ -64,10 +76,7 @@ class HomeScreenState extends State<HomeScreen> {
             mSpace(),
 
             ///Searchbar
-            Container(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                width: mediaQueryWidth,
-                child: Center(child: cusSearchTF())),
+            cusSearchTF(),
             mSpace(),
 
             ///Slider Banner
@@ -102,17 +111,19 @@ class HomeScreenState extends State<HomeScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: SizedBox(
-                  height: mediaQueryHeight,
+                  height: mediaQueryHeight * 0.57,
                   child: BlocBuilder<ProductBloc, ProductState>(
                       builder: (context, state) {
+                    log('this is state $state');
                     if (state is ProductLoadingState) {
-                      return CircularProgressIndicator();
+                      return const CircularProgressIndicator();
                     } else if (state is ProductLoadedState) {
                       return GridView.builder(
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
-                        itemCount: 40,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        itemCount: state.productModel!.data!.length,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           childAspectRatio: 7 / 9,
                           crossAxisSpacing: 8,
@@ -120,79 +131,39 @@ class HomeScreenState extends State<HomeScreen> {
                           mainAxisExtent: 230,
                         ),
                         itemBuilder: (context, index) {
-                          return CateContainer(
-                            imageAssets: Image.asset(
-                              'assets/images/subcatlog/Img_hphone.jpg',
-                              height: MediaQuery.sizeOf(context).height * 0.15,
+                          var products = state.productModel!.data![index];
+                          return InkWell(
+                            child: CateContainer(
+                              name: "${products.name}",
+                              price: "${products.price}",
+                              imageAssets: Image.network(
+                                "${products.image}",
+                                height:
+                                    MediaQuery.sizeOf(context).height * 0.15,
+                              ),
                             ),
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(
+                                builder: (context) {
+                                  return ProDetailsScreen(
+                                      mProduct_id: int.parse(products.id!),
+                                      name: products.name,
+                                      price: products.price,
+                                      imgUrl: products.image);
+                                },
+                              ));
+                            },
                           );
                         },
                       );
                     } else if (state is ProductErrorState) {
-                      print('error $state');
+                      print("Error : $state");
                     }
                     return Container();
                   })),
             )
           ],
         ),
-      ),
-
-      ///Floating action button
-      floatingActionButtonLocation:
-          FloatingActionButtonLocation.miniCenterDocked,
-      extendBody: true,
-      resizeToAvoidBottomInset: false,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
-        backgroundColor: Colors.deepOrange,
-        foregroundColor: Colors.white,
-        child: ImageIcon(
-          AssetImage("assets/icon/ic_home.png"),
-          size: 24,
-        ),
-      ),
-
-      /// Bottom Navigation Bar
-      bottomNavigationBar: BottomAppBar(
-        surfaceTintColor: Colors.white,
-        elevation: 10,
-        shadowColor: Colors.grey,
-        shape: CircularNotchedRectangle(),
-        height: 70,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              ImageIcon(
-                AssetImage("assets/icon/ic_appsadd.png"),
-                size: 26,
-                color: Colors.grey,
-              ),
-              ImageIcon(
-                AssetImage("assets/icon/ic_heart.png"),
-                size: 26,
-                color: Colors.grey,
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              ImageIcon(
-                AssetImage("assets/icon/ic_cart-minus.png"),
-                size: 26,
-                color: Colors.grey,
-              ),
-              ImageIcon(
-                AssetImage("assets/icon/ic_adminalt.png"),
-                size: 26,
-                color: Colors.grey,
-              ),
-            ],
-          ),
-        ),
-        notchMargin: 5,
       ),
     );
   }
@@ -205,50 +176,57 @@ class HomeScreenState extends State<HomeScreen> {
 
   /// Search Bar
   Widget cusSearchTF() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: MediaQuery.sizeOf(context).height * 0.026,
-          child: ImageIcon(
-            color: Colors.grey,
-            AssetImage(
-              "assets/icon/ic_search.png",
+    return SizedBox(
+      width: MediaQuery.sizeOf(context).width * 0.9,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: MediaQuery.sizeOf(context).width * 0.13,
+            /* height: MediaQuery.sizeOf(context).height * 0.03,*/
+            child: const ImageIcon(
+              color: Colors.grey,
+              AssetImage(
+                "assets/icon/ic_search.png",
+              ),
+              size: 27,
             ),
           ),
-        ),
-        SizedBox(
-          width: MediaQuery.of(context).size.width / 1.3,
-          child: TextFormField(
-            clipBehavior: Clip.antiAlias,
-            style: mFontStyle(
-                color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 16),
-            decoration: InputDecoration(
-                filled: true,
-                hintText: "Search..",
-                contentPadding: EdgeInsets.all(14),
-                fillColor: Colors.transparent,
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.transparent),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.transparent),
-                )),
+          SizedBox(
+            width: MediaQuery.sizeOf(context).width * 0.60,
+            child: TextFormField(
+              clipBehavior: Clip.antiAlias,
+              style: mFontStyle(
+                  color: Colors.grey,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16),
+              decoration: const InputDecoration(
+                  filled: true,
+                  hintText: "Search..",
+                  contentPadding: EdgeInsets.all(14),
+                  fillColor: Colors.transparent,
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.transparent),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.transparent),
+                  )),
+            ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(right: 10),
-          child: Container(
-            height: 30,
-            color: Colors.grey,
-            width: 2.4,
+          Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: Container(
+              height: 30,
+              color: Colors.grey,
+              width: 2,
+            ),
           ),
-        ),
-        SizedBox(
-            width: MediaQuery.sizeOf(context).height * 0.026,
-            child:
-                ImageIcon(AssetImage("assets/icon/ic_options.png"), size: 26)),
-      ],
+          SizedBox(
+              width: MediaQuery.sizeOf(context).width * 0.13,
+              child: const ImageIcon(AssetImage("assets/icon/ic_options.png"),
+                  size: 26)),
+        ],
+      ),
     );
   }
 
@@ -260,7 +238,7 @@ class HomeScreenState extends State<HomeScreen> {
         width: MediaQuery.sizeOf(context).width,
         height: MediaQuery.sizeOf(context).height * 0.24,
         clipBehavior: Clip.antiAliasWithSaveLayer,
-        margin: EdgeInsets.symmetric(horizontal: 22),
+        margin: const EdgeInsets.symmetric(horizontal: 18),
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(22)),
         child: CarouselSlider(
           options: CarouselOptions(
@@ -273,7 +251,7 @@ class HomeScreenState extends State<HomeScreen> {
           ),
           items: imgList.map((imgItems) {
             return Image.asset(
-              "$imgItems",
+              imgItems,
               fit: BoxFit.fill,
               width: double.infinity,
             );
@@ -287,7 +265,7 @@ class HomeScreenState extends State<HomeScreen> {
         child: AnimatedSmoothIndicator(
           activeIndex: activeIndex,
           count: imgList.length,
-          effect: ExpandingDotsEffect(
+          effect: const ExpandingDotsEffect(
               dotHeight: 7,
               dotWidth: 7,
               radius: 3,
@@ -303,48 +281,46 @@ class HomeScreenState extends State<HomeScreen> {
   Widget category() {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
-        log('this is state $state');
         if (state is HomeLoadingState) {
           return const CircularProgressIndicator();
         } else if (state is HomeLoadedState) {
-          return Expanded(
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: state.catModel.data!.length,
-              itemBuilder: (context, index) {
-                var item = state.catModel.data![index];
-                return Padding(
-                  padding: EdgeInsets.only(
-                    left: 20,
-                    top: 10,
-                    right: index == imgList.length - 1 ? 20 : 0,
-                  ),
-                  child: Column(
-                    children: [
-                      ClipOval(
-                        child: Image.asset(
-                          "assets/images/category/mobile.jpg",
-                          fit: BoxFit.fill,
-                          width: 80,
-                          height: 80,
-                        ),
+          return ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: state.categoriesModel.data!.length,
+            itemBuilder: (context, index) {
+              var item = state.categoriesModel.data![index];
+              return Padding(
+                padding: EdgeInsets.only(
+                  left: 18,
+                  top: 10,
+                  right:
+                      index == state.categoriesModel.data!.length - 1 ? 18 : 0,
+                ),
+                child: Column(
+                  children: [
+                    ClipRRect(
+                      child: Image.asset(
+                        categories[index],
+                        fit: BoxFit.fitHeight,
+                        width: 80,
+                        height: 80,
                       ),
-                      Center(
-                          child: Text(
-                        "${item.name}",
-                        style: mFontStyle(
-                            fontSize: 16, fontWeight: FontWeight.w600),
-                        maxLines: 2,
-                        textAlign: TextAlign.center,
-                      ))
-                    ],
-                  ),
-                );
-              },
-            ),
+                    ),
+                    Center(
+                        child: Text(
+                      "${item.name}",
+                      style:
+                          mFontStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                      maxLines: 2,
+                      textAlign: TextAlign.center,
+                    ))
+                  ],
+                ),
+              );
+            },
           );
         } else if (state is HomeErrorState) {
-          print('${state.errorMsg}');
+          print(state.errorMsg);
         }
         return Container(
           color: Colors.deepOrange,

@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../utils/font_style.dart';
 import '../../widgets/cust_buttons.dart';
-import '../../widgets/cust_tf_inputdecoration.dart';
+import '../../widgets/custome_inputdecoration.dart';
 import '../home/homescreen.dart';
+import '../navigation_screen.dart';
 import '../signup/signup_screen.dart';
 import 'bloc/login_bloc.dart';
 
 class SigninScreen extends StatefulWidget {
+  const SigninScreen({super.key});
+
   @override
   State<SigninScreen> createState() => SigninScreenState();
 }
@@ -41,7 +44,7 @@ class SigninScreenState extends State<SigninScreen> {
               ),
               mSpacer(),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 height: MediaQuery.sizeOf(context).height * 0.6,
                 width: MediaQuery.sizeOf(context).width * 0.9,
                 decoration: BoxDecoration(
@@ -108,7 +111,7 @@ class SigninScreenState extends State<SigninScreen> {
                               Navigator.pushReplacement(context,
                                   MaterialPageRoute(
                                 builder: (context) {
-                                  return const HomeScreen();
+                                  return const NavigationScreen();
                                 },
                               ));
                             } else if (state is LoginErrorState) {
@@ -116,7 +119,7 @@ class SigninScreenState extends State<SigninScreen> {
                                   SnackBar(content: Text('${state.errorMsg}')));
                             }
                           },
-                          child: CustButtons(
+                          child: CustomButtons(
                               text: "Login",
                               onPress: () {
                                 context.read<LoginBloc>().add(LoginUser(

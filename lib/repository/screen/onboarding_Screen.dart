@@ -25,7 +25,7 @@ class OnboardingScreen extends StatelessWidget {
               child: SizedBox(
                 width: 280,
                 height: 55,
-                child: CustButtons(
+                child: CustomButtons(
                     bgColor: const Color(0xFF2C2C2C),
                     text: "Get Started...!",
                     onPress: () {
@@ -34,7 +34,7 @@ class OnboardingScreen extends StatelessWidget {
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => SigninScreen()));
+                              builder: (context) => const SigninScreen()));
                     }),
               ),
             ),

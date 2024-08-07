@@ -1,9 +1,8 @@
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:salesindia/data/remote/url_helper.dart';
 import 'package:salesindia/domain/constents/exception.dart';
 import '../../../../data/remote/api_helper.dart';
 import '../../../../domain/model/product_model.dart';
-
 part 'product_event.dart';
 part 'product_state.dart';
 
@@ -14,13 +13,12 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     on<GetProduct>((event, emit) async {
       emit(ProductLoadingState());
       try {
-        List<ProductModel> productModel = [];
-        var res = await apiHelper.postApi(url: UrlHelper.Products_URl);
-        var rawData = ProductModel.fromJson(res);
-        productModel.add(rawData);
-        emit(ProductLoadedState(prodectModel: productModel));
+        var response = await apiHelper.postApi(
+            url: UrlHelper.Products_URl, isHeadersRequired: true);
+        var productData = ProductModel.fromJson(response);
+        emit(ProductLoadedState(productModel: productData));
       } catch (e) {
-        emit(ProductErrorState(errorMsg: (e as AppException).toString()));
+        print(" errorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr $e");
       }
     });
   }

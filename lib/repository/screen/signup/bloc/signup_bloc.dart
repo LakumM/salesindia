@@ -16,7 +16,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
             .postApi(url: UrlHelper.Register_User_URL, bodyParams: {
           'name': event.name,
           'email': event.email,
-          'mobile_number': event.mobile_number,
+          'mobile_number': event.mobile_Number,
           'password': event.password,
         });
         LoginSignupModel.fromJson(resData);

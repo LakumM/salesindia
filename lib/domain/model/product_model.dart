@@ -1,53 +1,54 @@
-import 'dart:core';
-
 class ProductModel {
-  String? message;
   bool? status;
-  List<PDataModel> data;
+  String? message;
+  List<ProDataModel>? data;
 
   ProductModel(
       {required this.data, required this.message, required this.status});
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
-    List<PDataModel> pData = [];
+    List<ProDataModel> pData = [];
     for (Map<String, dynamic> eachData in json['data']) {
-      var eachModel = PDataModel.fromJson(eachData);
+      var eachModel = ProDataModel.fromJson(eachData);
       pData.add(eachModel);
     }
     return ProductModel(
-        data: pData, message: json['message'], status: json['status']);
+      message: json['message'],
+      status: json['status'],
+      data: pData,
+    );
   }
 }
 
-class PDataModel {
-  num? id;
+class ProDataModel {
+  String? id;
   String? name;
   String? price;
   String? image;
-  num? category_id;
-  num? status;
-  String? created_at;
-  String? updated_at;
+  String? categoryId;
+  String? status;
+  String? createdAt;
+  String? updatedAt;
 
-  PDataModel(
+  ProDataModel(
       {required this.id,
       required this.status,
       required this.name,
-      required this.updated_at,
-      required this.created_at,
+      required this.updatedAt,
+      required this.createdAt,
       required this.price,
-      required this.category_id,
+      required this.categoryId,
       required this.image});
 
-  factory PDataModel.fromJson(Map<String, dynamic> jSon) {
-    return PDataModel(
+  factory ProDataModel.fromJson(Map<String, dynamic> jSon) {
+    return ProDataModel(
         id: jSon['id'],
         status: jSon['status'],
         name: jSon['name'],
-        updated_at: jSon['updated_at'],
-        created_at: jSon['created_at'],
+        updatedAt: jSon['updated_at'],
+        createdAt: jSon['created_at'],
         price: jSon['price'],
-        category_id: jSon['category_id'],
+        categoryId: jSon['category_id'],
         image: jSon['image']);
   }
 }

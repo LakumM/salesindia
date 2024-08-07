@@ -11,19 +11,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<GetCategoryEvent>((event, emit) async {
       emit(HomeLoadingState());
       try {
-        //List<Categories> catDataModel = [];
         var catData = await apiHelper.getApi(url: UrlHelper.Categories_URl);
-
-        ///hello ji
-        ///code git pe push krke raunak sir ko mail krdo
-        print("actualData : $catData");
-
-        //for (var eachData in catData) {
-        var catModel = Categories.fromJson(catData);
-        // catDataModel.add(eachModel);
-        // print(eachModel);
-        // }
-        emit(HomeLoadedState(catModel: catModel));
+        var catModel = CategoriesModel.fromJson(catData);
+        emit(HomeLoadedState(categoriesModel: catModel));
       } catch (e) {
         emit(HomeErrorState(errorMsg: e.toString()));
       }

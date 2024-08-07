@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
-
 import '../utils/font_style.dart';
 
-class CustButtons extends StatelessWidget {
+// ignore: must_be_immutable
+class CustomButtons extends StatelessWidget {
   String text;
   VoidCallback onPress;
   Color bgColor;
-  CustButtons(
-      {this.bgColor = Colors.black, required this.text, required this.onPress});
+  CustomButtons(
+      {super.key,
+      this.bgColor = Colors.black,
+      required this.text,
+      required this.onPress});
 
   @override
   Widget build(BuildContext context) {

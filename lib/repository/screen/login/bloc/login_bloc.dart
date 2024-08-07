@@ -4,7 +4,6 @@ import 'package:salesindia/domain/constents/app_prefs.dart';
 import 'package:salesindia/domain/model/login_model.dart';
 import '../../../../data/remote/api_helper.dart';
 import '../../../../data/remote/url_helper.dart';
-import '../../../../domain/constents/exception.dart';
 
 part 'login_event.dart';
 part 'login_state.dart';
@@ -28,8 +27,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           emit(LoginLodedState());
         }
       } catch (e) {
-        print("ssssssssssssssssssssssssss $e");
-        emit(LoginErrorState(errorMsg: (e as AppException).toString()));
+        emit(LoginErrorState(errorMsg: "$e"));
       }
     });
   }

@@ -9,7 +9,6 @@ class AppPrefs {
   Future<void> setPrefs(String token) async {
     await initPrefs();
     prefs!.setString('token', token);
-    print(token);
   }
 
   Future<String> getPrefs() async {

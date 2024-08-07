@@ -13,11 +13,11 @@ InputDecoration mInputDecoration({
     suffixIcon: suIcon,
     enabledBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(16),
-      borderSide: BorderSide(color: Colors.black12, width: 3),
+      borderSide: const BorderSide(color: Colors.black12, width: 3),
     ),
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(16),
-      borderSide: BorderSide(color: Colors.black12, width: 3),
+      borderSide: const BorderSide(color: Colors.black12, width: 3),
     ),
   );
 }

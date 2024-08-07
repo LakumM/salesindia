@@ -11,10 +11,10 @@ class ApiHelper {
   }) async {
     var uri = Uri.parse(url);
     String? tokan = await AppPrefs().getPrefs();
-    print("token get $tokan");
     try {
       var res = await http_clint
           .get(uri, headers: {'Authorization': 'Bearer $tokan'});
+      print("$tokan");
       return returnJsonResponse(res);
     } on SocketException catch (e) {
       FetchDataException(errorMsg: "Internet Not Found $e");
@@ -50,7 +50,6 @@ dynamic returnJsonResponse(http_clint.Response res) {
     case 200:
       {
         var dResp = jsonDecode(res.body);
-        print("$dResp this is switch esp");
         return dResp;
       }
     case 400:

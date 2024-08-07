@@ -7,7 +7,7 @@ import 'package:salesindia/repository/screen/signup/bloc/signup_state.dart';
 import '../../../data/remote/api_helper.dart';
 import '../../utils/font_style.dart';
 import '../../widgets/cust_buttons.dart';
-import '../../widgets/cust_tf_inputdecoration.dart';
+import '../../widgets/custome_inputdecoration.dart';
 
 final _valFormKey = GlobalKey<FormState>();
 
@@ -94,7 +94,8 @@ class _SignupScreenState extends State<SignupScreen> {
                         controller: nameController,
                         decoration: mInputDecoration(
                             hText: "Full Name",
-                            preIcon: Icon(Icons.manage_accounts_outlined)),
+                            preIcon:
+                                const Icon(Icons.manage_accounts_outlined)),
                       ),
                       mSpacer(),
 
@@ -112,7 +113,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         keyboardType: TextInputType.emailAddress,
                         decoration: mInputDecoration(
                             hText: "Email",
-                            preIcon: Icon(Icons.email_outlined)),
+                            preIcon: const Icon(Icons.email_outlined)),
                       ),
                       mSpacer(),
 
@@ -128,7 +129,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         keyboardType: TextInputType.phone,
                         decoration: mInputDecoration(
                             hText: "Mobile No.",
-                            preIcon: Icon(Icons.phone_android_outlined)),
+                            preIcon: const Icon(Icons.phone_android_outlined)),
                       ),
                       mSpacer(),
 
@@ -146,15 +147,16 @@ class _SignupScreenState extends State<SignupScreen> {
                         obscureText: isHidePass,
                         decoration: mInputDecoration(
                             hText: "Password",
-                            preIcon: Icon(Icons.lock_outline_rounded),
+                            preIcon: const Icon(Icons.lock_outline_rounded),
                             suIcon: IconButton(
                                 onPressed: () {
                                   isHidePass = !isHidePass;
                                   setState(() {});
                                 },
                                 icon: isHidePass
-                                    ? Icon(Icons.remove_red_eye)
-                                    : Icon(Icons.remove_red_eye_outlined))),
+                                    ? const Icon(Icons.remove_red_eye)
+                                    : const Icon(
+                                        Icons.remove_red_eye_outlined))),
                       ),
                       mSpacer(),
 
@@ -169,7 +171,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         obscureText: isHideConPass,
                         decoration: mInputDecoration(
                             hText: "Confirm Password",
-                            preIcon: Icon(
+                            preIcon: const Icon(
                               Icons.lock_outline_rounded,
                             ),
                             suIcon: IconButton(
@@ -178,13 +180,14 @@ class _SignupScreenState extends State<SignupScreen> {
                                   setState(() {});
                                 },
                                 icon: isHideConPass
-                                    ? Icon(Icons.remove_red_eye)
-                                    : Icon(Icons.remove_red_eye_outlined))),
+                                    ? const Icon(Icons.remove_red_eye)
+                                    : const Icon(
+                                        Icons.remove_red_eye_outlined))),
                       ),
                       mSpacer(),
 
                       /// Sign up Button
-                      Container(
+                      SizedBox(
                           height: 45,
                           width: 220,
                           child: BlocListener<SignupBloc, SignupState>(
@@ -192,7 +195,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               print(state);
                               if (state is SignupLoadingState) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
+                                    const SnackBar(
                                         content: CircularProgressIndicator()));
                               } else if (state is SignupErrorState) {
                                 ScaffoldMessenger.of(context).showSnackBar(
@@ -206,10 +209,11 @@ class _SignupScreenState extends State<SignupScreen> {
                                 Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => SigninScreen()));
+                                        builder: (context) =>
+                                            const SigninScreen()));
                               }
                             },
-                            child: CustButtons(
+                            child: CustomButtons(
                                 text: "Sign up",
                                 onPress: () {
                                   if (_valFormKey.currentState!.validate()) {
@@ -217,7 +221,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                         SignupUser(
                                             name: nameController.text,
                                             email: emailController.text,
-                                            mobile_number: mobilController.text,
+                                            mobile_Number: mobilController.text,
                                             password: passController.text));
                                   }
                                 }),
@@ -235,7 +239,8 @@ class _SignupScreenState extends State<SignupScreen> {
                                 Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => SigninScreen()));
+                                        builder: (context) =>
+                                            const SigninScreen()));
                               },
                               child: Text(
                                 'Login',
@@ -257,9 +262,9 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
-  Widget mSpacer({double mheight = 16}) {
+  Widget mSpacer({double mHeight = 16}) {
     return SizedBox(
-      height: mheight,
+      height: mHeight,
     );
   }
 }
